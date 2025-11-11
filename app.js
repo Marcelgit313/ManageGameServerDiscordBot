@@ -22,7 +22,7 @@ const port = process.env.PORT || 3000;
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
     // Interaction id, type and data
     const { type, data } = req.body;
-
+        console.log(req.body);
         /**
          * Handle verification requests
          */
@@ -35,7 +35,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
          * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
          */
         if (type === InteractionType.APPLICATION_COMMAND) {
-            const {name, options, member, token} = data;
+            const {name, options, member} = data;
 
             // "test" command
             if (name === 'test') {
@@ -57,9 +57,8 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
             if (name === "gameserver") {
                 const allowedRoleId = process.env.ROLE_ID;
-                const roles = member.roles;
 
-                if (!roles.includes(allowedRoleId)) {
+                if (!member.roles.includes(allowedRoleId)|| !member || !member.roles) {
                     return res.send({
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: {
