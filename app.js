@@ -72,12 +72,12 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
                 try {
                     await proxmoxAction(aktion, server);
-                    res.send({
+                    return res.send({
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: { content: `🔁 Führe Aktion **${aktion}** auf Server **${server}** aus...` }
                     });
                 } catch (err) {
-                    res.send({
+                    return res.send({
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: { content: `🔁 Error bei Aktion.` }
                     });
