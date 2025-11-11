@@ -13,6 +13,8 @@ import axios from "axios";
 const app = express();
 const port = process.env.PORT || 3000;
 
+
+
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  * Parse request body and verifies incoming requests using discord-interactions package
@@ -55,7 +57,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
             if (name === "gameserver") {
                 const allowedRoleId = process.env.ROLE_ID;
-                const {roles} = member;
+                const roles = member.roles;
 
                 if (!roles.includes(allowedRoleId)) {
                     return res.send({
@@ -70,16 +72,17 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
                 const aktion = options.find(o => o.name === "aktion")?.value;
                 const server = options.find(o => o.name === "server")?.value;
 
-                res.send({
-                    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                    data: { content: `🔁 Führe Aktion **${aktion}** auf Server **${server}** aus...` }
-                });
-
                 try {
                     await proxmoxAction(aktion, server);
-                    await followUp(token, `✅ Server **${server}** erfolgreich ${aktion === "restart" ? "neu gestartet" : (aktion === "start" ? "gestartet" : "gestoppt")}.`);
+                    res.send({
+                        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        data: { content: `🔁 Führe Aktion **${aktion}** auf Server **${server}** aus...` }
+                    });
                 } catch (err) {
-                    await followUp(token, `❌ Fehler: ${err.message}}`);
+                    res.send({
+                        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                        data: { content: `🔁 Error bei Aktion.` }
+                    });
                 }
             }
 
@@ -91,12 +94,6 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         return res.status(400).json({error: 'unknown interaction type'});
     });
 
-async function followUp(token, message) {
-    await axios.post(
-        `https://discord.com/api/v10/webhooks/${process.env.CLIENT_ID}/${token}`,
-        { content: message }
-    );
-}
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
