@@ -1,0 +1,19 @@
+{
+  "name": "discordbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "register": "node commands.js"
+  },
+  "keywords": [],
+  "author": "Marcel Wirdel",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "discord-interactions": "^4.4.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
