@@ -12,7 +12,7 @@ const TEST_COMMAND = {
 
 const GAMESERVER_COMMAND = {
     name: "gameserver",
-    description: "Steuere einen Game-Server über Proxmox",
+    description: "Steuere einen Game-Server",
     options: [
         {
             name: "aktion",
