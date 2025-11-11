@@ -55,8 +55,9 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
             if (name === "gameserver") {
                 const allowedRoleId = process.env.ROLE_ID;
+                const {roles} = member;
 
-                if (!member.roles.includes(allowedRoleId)) {
+                if (!roles.includes(allowedRoleId)) {
                     return res.send({
                         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                         data: {
